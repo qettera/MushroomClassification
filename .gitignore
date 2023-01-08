@@ -1,0 +1,7 @@
+.p/
+.vscode/
+./bezkozlarza
+./checkpoints
+./images
+./saved
+pytorch.py
