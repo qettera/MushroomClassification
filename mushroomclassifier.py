@@ -8,12 +8,12 @@ import os
 import numpy as np
 
 DATA_PATH = r'C:\Users\pbirylo\Desktop\grzyby_projekt\images\train'
-SPLITTED_PATH =r'C:\Users\pbirylo\Desktop\grzyby_projekt\output'
-SAVE_PATH = r'C:\Users\pbirylo\Desktop\grzyby_projekt\saved\model_1'
+SPLITTED_PATH =r'C:\Users\pbirylo\Desktop\grzyby_projekt\output_test'
+SAVE_PATH = r'C:\Users\pbirylo\Desktop\grzyby_projekt\saved\model_test'
 
 IMG_SHAPE = (244, 244)
 BATCH_SIZE = 1
-EPOCHS = 5
+EPOCHS = 1
 
 
 """ Check versions & if GPU is visible """
@@ -56,9 +56,9 @@ def make_ds(train_path,test_path,val_path):
         batch_size = BATCH_SIZE)
 
     class_names = train_ds.class_names
-    train_ds = train_ds.cache()
-    test_ds = test_ds.cache()
-    valid_ds = valid_ds.cache()
+    # train_ds = train_ds.cache()
+    # test_ds = test_ds.cache()
+    # valid_ds = valid_ds.cache()
 
     num_classes = len(class_names)
 
@@ -85,20 +85,20 @@ def train_classifier(train_ds, valid_ds, num_classes, epochs=EPOCHS, save_path=S
 
 
     model = keras.Model(inputs, outputs, name = "model")
-    print("MODEL SUMMARY:\n", model.summary())
+    model.summary()
 
 
     model.compile(optimizer = tf.keras.optimizers.SGD(learning_rate = 0.001, momentum = 0.9, nesterov = True),
                     loss = 'categorical_crossentropy',
                     metrics = ['accuracy'])
 
-    print(history = model.fit( 
+    history = model.fit( 
         train_ds, 
         steps_per_epoch = len(train_ds), 
         epochs = epochs,
         validation_data = valid_ds,
         validation_steps = len(valid_ds),
-    ))
+    )
 
     model.save(save_path)
     print("Model saved at:\n", save_path)
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     # prepare datasets
     train_ds, test_ds, valid_ds, num_classes, class_names = make_ds(train, test, val)
     # train
-    train_classifier(train_ds, test_ds, valid_ds, num_classes)
+    train_classifier(train_ds, valid_ds, num_classes)
     # load model and provide path for image to predict
     img_path = r'C:\Users\pbirylo\Desktop\grzyby_projekt\output\test\muchomorczerwony-Amanita_muscaria\Amanita muscaria_33.jpg'
     load_predict(img_path, class_names)
